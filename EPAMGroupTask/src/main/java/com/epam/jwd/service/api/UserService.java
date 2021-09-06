@@ -6,6 +6,7 @@ import com.epam.jwd.service.exception.IllegalAgeException;
 import com.epam.jwd.service.exception.IllegalEmailException;
 import com.epam.jwd.service.exception.IllegalNameSizeException;
 import com.epam.jwd.service.exception.NoCashException;
+import com.epam.jwd.service.exception.NoUserException;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public interface UserService {
     void changeUserEmail(String userEmail) throws IllegalEmailException;
     List<Ticket> getAvailableForKidsTickets();
     List<Ticket> getTicketsByMovieName(String movieName);
-    void signIn(String userName);
+    void signIn(String userName) throws NoUserException;
     void signOut();
 }

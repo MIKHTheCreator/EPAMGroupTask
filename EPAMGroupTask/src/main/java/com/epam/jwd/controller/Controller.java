@@ -7,6 +7,7 @@ import com.epam.jwd.service.exception.IllegalAgeException;
 import com.epam.jwd.service.exception.IllegalEmailException;
 import com.epam.jwd.service.exception.IllegalNameSizeException;
 import com.epam.jwd.service.exception.NoCashException;
+import com.epam.jwd.service.exception.NoUserException;
 import com.epam.jwd.service.exception.UnavailableSaveTicketException;
 import com.epam.jwd.service.impl.SellerServiceImpl;
 import com.epam.jwd.service.impl.UserServiceImpl;
@@ -89,11 +90,16 @@ public class Controller {
         Scanner scanner = getScanner();
         printInputUserName();
 
-        while (scanner.hasNext()) {
+        if (scanner.hasNext()) {
             String userName = scanner.nextLine();
 
-            service.signIn(userName);
-            printFunctions();
+            try {
+                service.signIn(userName);
+                printFunctions();
+            } catch (NoUserException e) {
+                log.error(e);
+                printMenu();
+            }
         }
     }
 
@@ -108,21 +114,34 @@ public class Controller {
             String email = "";
             printInputUserAge();
 
-            if (scanner.hasNext()) {
+            if (scanner.hasNextInt()) {
                 age = scanner.nextInt();
                 printInputUserBalance();
+            } else {
+                printErrorAge();
+                printMenu();
+                break;
             }
 
-            if (scanner.hasNext()) {
+            if (scanner.hasNextDouble()) {
                 balance = scanner.nextDouble();
                 printInputUserEMAIL();
+            } else {
+                printErrorEmail();
+                printMenu();
+                break;
             }
 
             if (scanner.hasNext()) {
                 email = scanner.nextLine();
+            } else {
+                printErrorEmail();
+                printMenu();
+                break;
             }
             service.registration(new User(generateId(), userName, balance, age, email));
             printFunctions();
+            break;
         }
     }
 

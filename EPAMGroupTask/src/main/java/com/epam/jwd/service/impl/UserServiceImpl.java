@@ -11,7 +11,10 @@ import com.epam.jwd.service.exception.IllegalAgeException;
 import com.epam.jwd.service.exception.IllegalEmailException;
 import com.epam.jwd.service.exception.IllegalNameSizeException;
 import com.epam.jwd.service.exception.NoCashException;
+import com.epam.jwd.service.exception.NoUserException;
 import com.epam.jwd.service.validation.UserValidation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,9 +25,12 @@ public class UserServiceImpl implements UserService {
     private static final String NO_CASH_MESSAGE = "You haven't got enough cash to pay";
     private static final String INVALID_EMAIL = "Invalid email address";
     private static final String ILLEGAL_AGE_EXCEPTION = "Age must be positive number";
+    private static final String ERROR_MESSAGE = "There is no user!";
     private User user;
     private final UserRepository<Long, User> userRepository = UserRepositoryImpl.getInstance();
     private final TicketRepository<Long, Ticket> ticketRepository = TicketRepositoryImpl.getInstance();
+
+    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
 
     @Override
     public void registration(User user) {
@@ -45,7 +51,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (IllegalNameSizeException e) {
             System.out.println(INVALID_NAME_MESSAGE);
-            //log
+
         }
     }
 
@@ -57,7 +63,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (IllegalAgeException e) {
             System.out.println(ILLEGAL_AGE_EXCEPTION);
-            //log
+            log.error( ILLEGAL_AGE_EXCEPTION, e);
         }
     }
 
@@ -69,7 +75,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (IllegalEmailException e) {
             System.out.println(INVALID_EMAIL);
-            //log
+            log.error(INVALID_EMAIL, e);
         }
     }
 
@@ -87,7 +93,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (NoCashException e) {
             System.out.println(NO_CASH_MESSAGE);
-            //log
+            log.error(NO_CASH_MESSAGE, e);
         }
     }
 
@@ -108,8 +114,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signIn(String userName) {
+    public void signIn(String userName) throws NoUserException {
         this.user = userRepository.findByUserName(userName);
+        if(user == null) {
+            throw new NoUserException(ERROR_MESSAGE);
+        }
     }
 
     @Override
