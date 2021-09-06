@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
         Ticket ticket = ticketRepository.findByMovieName(movieName).stream().findFirst().orElse(null);
 
         try {
-            if (UserValidation.isEnoughCash(user, ticket != null ? ticket.getPrice() : DEFAULT_TICKET_PRICE)) {
-                user.addTicket(ticket);
-                ticketRepository.delete(ticket);
-                if (ticket != null) {
+            if(ticket != null){
+                if (UserValidation.isEnoughCash(user, ticket.getPrice())) {
+                    user.addTicket(ticket);
+                    ticketRepository.delete(ticket);
                     user.setBalance(user.getBalance() - ticket.getPrice());
                 }
             }
