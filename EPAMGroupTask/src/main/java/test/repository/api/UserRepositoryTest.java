@@ -5,7 +5,6 @@ import com.epam.jwd.repository.model.User;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

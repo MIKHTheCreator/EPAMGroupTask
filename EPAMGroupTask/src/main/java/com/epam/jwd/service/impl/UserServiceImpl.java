@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     private User user;
     private final UserRepository<Long, User> userRepository = UserRepositoryImpl.getInstance();
     private final TicketRepository<Long, Ticket> ticketRepository = TicketRepositoryImpl.getInstance();
-    private static final double DEFAULT_TICKET_PRICE = 0;
 
     @Override
     public void registration(User user) {
